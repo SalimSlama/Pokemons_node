@@ -20,8 +20,6 @@ app
     .use(bodyParser.json())
 
 sequelize.initDb()
-
-
 //Les points de terminaison
 
 require('./src/routes/findAllPokemons')(app)
