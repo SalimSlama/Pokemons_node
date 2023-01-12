@@ -21,6 +21,7 @@ app
 
 sequelize.initDb()
 
+
 //Les points de terminaison
 
 require('./src/routes/findAllPokemons')(app)
