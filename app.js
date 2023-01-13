@@ -7,13 +7,28 @@ const sequelize = require('./src/db/sequelize')
 const app = express()
 const port = 3000
 
-var http = require("http").createServer(app);
-var io = require("socket.io")(http);
+const server = require('http').createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 
 //Ajout d'un écouteur pour les nouvelles connexions
+
+
 io.on('connection', (socket) => {
-    console.log('Utilisateur connecté', socket.id);
+    console.log('Utilisateur connecté avec l\'id:', socket.id)
+    socket.on('disconnect', () => {
+        console.log('Utilisateur', socket.id, 'déconnecté');
+    })
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+        console.log('message: ' + msg);
+
+    })
+ 
 })
+
+
 //Utilisation d'un middleware personnalisé
 // app.use((req, res, next) => {
 //     console.log(`URL : ${req.url}`);
@@ -27,8 +42,8 @@ app
 
 //sequelize.initDb() 
 app.get('/', (req, res) => {
-    res.send("Hello Worlds ! ")
-})
+    res.sendFile(__dirname + '/index.html');
+});
 //Les points de terminaison
 
 require('./src/routes/findAllPokemons')(app)
@@ -37,19 +52,12 @@ require('./src/routes/createPokemon')(app)
 require('./src/routes/updatePokemon')(app)
 require('./src/routes/deletePokemon')(app)
 // Gestion des erreurs 404
-app.use(({res}) =>{
+app.use(({ res }) => {
     const message = 'Impossible de trouver la ressource ! Vous pouvez essayer une autre URL.'
-    res.status(404).json({message}) 
+    res.status(404).json({ message })
 })
 
-// add listener for new connection
-io.on("connection",  (socket) => {
-    // this is socket for each user
-    console.log("User connected", socket.id)
-});
-
-
-http.listen(port, () => {
+server.listen(port, () => {
     console.log(`Listening to port : ${port}`);
 });
 //app.listen(port, () => console.log(`Notre application Node est démarrée sur : http://localhost:${port}`))
