@@ -22,12 +22,10 @@ io.on('connection', (socket) => {
     })
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
-        console.log('message: ' + msg);
-
+        console.log(`Message de la part de ${socket.id} : ` , msg);
     })
  
 })
-
 
 //Utilisation d'un middleware personnalisé
 // app.use((req, res, next) => {
@@ -40,7 +38,7 @@ app
     .use(morgan('dev'))
     .use(bodyParser.json())
 
-//sequelize.initDb() 
+sequelize.initDb() 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
