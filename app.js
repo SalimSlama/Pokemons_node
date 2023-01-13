@@ -14,20 +14,21 @@ const io = new Server(server);
 
 //Ajout d'un écouteur pour les nouvelles connexions
 
-
 io.on('connection', (socket) => {
     console.log('Utilisateur connecté avec l\'id:', socket.id)
     socket.on('disconnect', () => {
-        console.log('Utilisateur', socket.id, 'déconnecté');
+        console.log('L\'utilisateur', socket.id, ' est déconnecté');
     })
     socket.on('chat message', (msg) => {
+
         io.emit('chat message', msg);
-        console.log(`Message de la part de ${socket.id} : ` , msg);
+        console.log(`Message de la part de ${socket.id} :`, msg);
+        
     })
- 
+
 })
 
-//Utilisation d'un middleware personnalisé
+// Utilisation d'un middleware personnalisé
 // app.use((req, res, next) => {
 //     console.log(`URL : ${req.url}`);
 //     next();
@@ -38,10 +39,10 @@ app
     .use(morgan('dev'))
     .use(bodyParser.json())
 
-sequelize.initDb() 
+//sequelize.initDb()
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-});
+})
 //Les points de terminaison
 
 require('./src/routes/findAllPokemons')(app)
@@ -59,3 +60,5 @@ server.listen(port, () => {
     console.log(`Listening to port : ${port}`);
 });
 //app.listen(port, () => console.log(`Notre application Node est démarrée sur : http://localhost:${port}`))
+
+
