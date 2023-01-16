@@ -29,17 +29,19 @@ io.on('connection', (socket) => {
 })
 
 // Utilisation d'un middleware personnalisé
+
 // app.use((req, res, next) => {
 //     console.log(`URL : ${req.url}`);
 //     next();
 // })
 
+// Utilisation des middlewares
 app
     .use(favicon(__dirname + '/favicon.ico'))
-    .use(morgan('dev'))
-    .use(bodyParser.json())
+    .use(morgan('dev')) //Log in console
+    .use(bodyParser.json())   //Convertir les entrées en JSON
 
-//sequelize.initDb()
+sequelize.initDb()
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 })
@@ -50,6 +52,8 @@ require('./src/routes/findPokemonByPk')(app)
 require('./src/routes/createPokemon')(app)
 require('./src/routes/updatePokemon')(app)
 require('./src/routes/deletePokemon')(app)
+require('./src/routes/login')(app)
+
 // Gestion des erreurs 404
 app.use(({ res }) => {
     const message = 'Impossible de trouver la ressource ! Vous pouvez essayer une autre URL.'
