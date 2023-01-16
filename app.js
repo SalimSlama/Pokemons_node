@@ -3,13 +3,16 @@ const morgan = require('morgan');
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const sequelize = require('./src/db/sequelize')
+const cors = require('cors')
 
 const app = express()
 const port = 3000
 
 const server = require('http').createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+
+const io = require('socket.io')(server)
+// const { Server } = require('socket.io');
+// const io = new Server(server);
 
 
 //Ajout d'un écouteur pour les nouvelles connexions
@@ -23,7 +26,7 @@ io.on('connection', (socket) => {
 
         io.emit('chat message', msg);
         console.log(`Message de la part de ${socket.id} :`, msg);
-        
+
     })
 
 })
@@ -40,6 +43,17 @@ app
     .use(favicon(__dirname + '/favicon.ico'))
     .use(morgan('dev')) //Log in console
     .use(bodyParser.json())   //Convertir les entrées en JSON
+    .use(cors())
+
+    // configurer l'utilisaton de CORS
+
+    // .use(cors(
+    //     {
+    //         "origin": "*",
+    //         "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    //         "preflightContinue": false,
+    //         "optionsSuccessStatus": 204
+    //     }))
 
 sequelize.initDb()
 app.get('/', (req, res) => {
